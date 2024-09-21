@@ -1,0 +1,12 @@
+<ng-container *ngIf="toastService.toasts && toastService.toasts.length > 0">
+  <div *ngFor="let toast of toastService.toasts">
+    <ngb-toast
+      [class]="toast.classname"
+      [autohide]="true"
+      [delay]="3000"
+      (hidden)="toastService.remove(toast)"
+    >
+      <span>{{ toast.toastMessage }}</span>
+    </ngb-toast>
+  </div>
+</ng-container>

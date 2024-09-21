@@ -6,7 +6,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "ipgp": {
+    "pravo": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -23,7 +23,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/ipgp",
+            "outputPath": "dist/pravo",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
@@ -34,6 +34,8 @@
               "src/assets"
             ],
             "styles": [
+              "node_modules/bootstrap/dist/js/bootstrap.bundle.min.js",
+              "node_modules/@popperjs/core/dist/umd/popper.min.js",
               "src/styles.scss"
             ],
             "scripts": []
@@ -75,10 +77,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "ipgp:build:production"
+              "browserTarget": "pravo:build:production"
             },
             "development": {
-              "browserTarget": "ipgp:build:development"
+              "browserTarget": "pravo:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -86,7 +88,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "ipgp:build"
+            "browserTarget": "pravo:build"
           }
         },
         "test": {
@@ -102,13 +104,17 @@
               "src/assets"
             ],
             "styles": [
+              "node_modules/bootstrap/dist/js/bootstrap.bundle.min.js",
+              "node_modules/@popperjs/core/dist/umd/popper.min.js",
               "src/styles.scss"
             ],
-            "scripts": []
+            "scripts": [
+              "node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"
+            ]
           }
         }
       }
     }
   },
-  "defaultProject": "ipgp"
+  "defaultProject": "pravo"
 }

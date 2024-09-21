@@ -1,0 +1,10 @@
+@import '../../../../styles.scss';
+
+.footer{
+  position: relative;
+  bottom: 0px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  height: 55px;
+}

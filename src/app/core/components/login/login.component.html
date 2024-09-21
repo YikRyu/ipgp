@@ -1,0 +1,76 @@
+<div class="wrapper">
+  <div class="login-container box-shadow">
+    <form [formGroup]="inputLoginFg" class="col-sm-10">
+      <div class="row col-sm-12">
+        <div class="col-sm-12 text-center">
+          <h1>Login to Pravo</h1>
+        </div>
+  
+        <div class="text-center my-3">
+          <div class="row mx-5 col-sm-10">
+            <div class="col-sm-12">
+              <div class="mb-3 col-sm-12 d-flex justify-content-center">
+                <label for="email" class="me-2">Email: </label>
+                <div class="col-sm-6 d-flex flex-column text-start">
+                  <input
+                    type="email"
+                    formControlName="email"
+                    placeholder="Enter Email"
+                  />
+  
+                  <ng-container *ngIf="!inputLoginFg.get('email').pristine && inputLoginFg.get('email').invalid">
+                    <div *ngFor="let validate of validateMessages.email">
+                      <span class="text-danger">
+                        <ng-container *ngIf="inputLoginFg.get('email').getError('required') && validate.type.match('required')"> {{ validate.message }}</ng-container>
+                        <ng-container *ngIf="inputLoginFg.get('email').getError('email') && validate.type.match('email')"> {{ validate.message }}</ng-container>
+                        </span>
+                    </div>
+                  </ng-container>
+                </div>
+                
+              </div>
+  
+              <div class="mb-3 col-sm-12 d-flex justify-content-center">
+                <label for="password" class="me-2">Password: </label>
+                <div class="d-flex flex-column col-sm-6 text-start"> 
+                  <input type="password"
+                  formControlName="password" placeholder="Enter Password" />
+                  
+                  <ng-container *ngIf="!inputLoginFg.get('password').pristine && inputLoginFg.get('password').invalid">
+                    <div *ngFor="let validate of validateMessages.password">
+                      <span class="text-danger text-justify"> {{ validate.message }}</span>
+                    </div>
+                  </ng-container>
+                </div>
+              </div>
+            </div>
+  
+            <div class="col-sm-4 mb-4 me-2">
+              <button class="btn-input px-4 py-2" (click)="submitForm()" [disabled]="isLoggingIn">
+                <ng-container *ngIf="isLoggingIn"><mat-spinner diameter="30"></mat-spinner></ng-container>
+                <ng-container *ngIf="!isLoggingIn">Login</ng-container>
+              </button>
+            </div>
+  
+            <div>
+              <span
+                >Don't have an account? Contact your admin to register for
+                one.</span
+              >
+            </div>
+  
+            <div class="mt-2">
+              <span>If you require any help, kindy</span>
+              <button class="btn-link" (click)="router.navigate(['/contact-support'])">contact support here</button>
+              <span>.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+
+
+<app-toast aria-live="polite" aria-atomic="true"></app-toast>

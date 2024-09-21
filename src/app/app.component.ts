@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { NavigationEnd, Router, RoutesRecognized } from '@angular/router';
 
 @Component({
   selector: 'app-root',
@@ -6,5 +7,23 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  title = 'ipgp';
+  title = 'pravo';
+  public isNormalLayout: boolean;
+  private routeString: string = '';
+
+  constructor(private route: Router) {
+    this.route.events.subscribe((data) => {
+      if (data instanceof NavigationEnd) {
+        this.routeString = this.route.url;
+      }
+    });
+
+    if(this.routeString == '' || this.routeString == '/login'){
+      this.isNormalLayout = false;
+    }else{
+      this.isNormalLayout = true;
+    }
+  }
+
+  ngOnInit(): void {}
 }
