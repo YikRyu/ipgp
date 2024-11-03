@@ -1,0 +1,22 @@
+<div class="content-wrapper">
+  <div class="user-profile-container box-shadow">
+    <div class="row col-sm-12">
+      <h2>User Profile</h2>
+      <div class="border light-grey mb-2"></div>
+
+      <span><strong>Name: </strong>{{user.name}}</span>
+      <span><strong>Employee ID: </strong>{{user.id}}</span>
+      <span><strong>Email: </strong>{{user.email}}</span>
+      <span><strong>Position: </strong>{{user.position}}</span>
+      <span><strong>Department </strong>{{user.department}}</span>
+      <span><strong>Contact No: </strong>{{user.contact}}</span>
+      <span><strong>Address: </strong>{{user.address}}</span>
+
+      <div class="d-flex mt-2">
+        <button class="btn-input me-2" (click)="updateProfile()">Update Profile</button>
+        <button class="btn-input me-2" (click)="changePassword()">Change Password</button>
+        <button class="btn-input" (click)="logout()">Logout</button>
+      </div>
+    </div>
+  </div>
+</div>

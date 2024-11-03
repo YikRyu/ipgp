@@ -11,11 +11,12 @@ import { LoginComponent } from './components/login/login.component';
 
 // Import refactor
 import { SharedModule } from '../shared/shared.module';
-import { GeneralRoutingModule } from '../modules/general/general-routing.module';
+import { UserRoutingModule } from '../modules/general/user-routing.module';
+import { AdminRoutingModule } from '../modules/admin/admin-routing.module';
 
 @NgModule({
   declarations: [FooterComponent, HeaderComponent, LoginComponent],
-  imports: [CommonModule, HttpClientModule, SharedModule, GeneralRoutingModule],
-  exports: [FooterComponent, HeaderComponent],
+  imports: [CommonModule, HttpClientModule, SharedModule, UserRoutingModule, AdminRoutingModule],
+  exports: [FooterComponent, HeaderComponent, LoginComponent],
 })
 export class CoreModule {}

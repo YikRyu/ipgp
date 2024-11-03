@@ -1,4 +1,6 @@
+import { Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-contact-support',
@@ -6,8 +8,13 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./contact-support.component.scss']
 })
 export class ContactSupportComponent implements OnInit {
+  public supportEmail: string = 'support@pravo.com';
+  public supportContact: string = '04 - 3034040';
 
-  constructor() { }
+  constructor(
+    public router: Router,
+    public _location: Location
+  ) { }
 
   ngOnInit(): void {
   }

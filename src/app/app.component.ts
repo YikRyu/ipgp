@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { NavigationEnd, Router, RoutesRecognized } from '@angular/router';
+import { LocalStorageService } from './core/services/services/local-storage.service';
 
 @Component({
   selector: 'app-root',
@@ -8,21 +9,10 @@ import { NavigationEnd, Router, RoutesRecognized } from '@angular/router';
 })
 export class AppComponent {
   title = 'pravo';
-  public isNormalLayout: boolean;
-  private routeString: string = '';
 
-  constructor(private route: Router) {
-    this.route.events.subscribe((data) => {
-      if (data instanceof NavigationEnd) {
-        this.routeString = this.route.url;
-      }
-    });
-
-    if(this.routeString == '' || this.routeString == '/login'){
-      this.isNormalLayout = false;
-    }else{
-      this.isNormalLayout = true;
-    }
+  constructor(
+    public router: Router
+  ) {
   }
 
   ngOnInit(): void {}

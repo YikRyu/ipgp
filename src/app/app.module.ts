@@ -9,9 +9,8 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { NgChartsModule } from 'ng2-charts';
 import { CoreModule } from './core/core.module';
-import { UserModule } from './modules/user/user.module';
+import { UserModule } from './modules/general/user.module';
 import { AdminModule } from './modules/admin/admin.module';
-import { GeneralModule } from './modules/general/general.module';
 
 @NgModule({
   declarations: [AppComponent],
@@ -24,9 +23,8 @@ import { GeneralModule } from './modules/general/general.module';
     SharedModule, 
     CommonModule,
     CoreModule,
-    UserModule,
     AdminModule,
-    GeneralModule
+    UserModule
   ],
   providers: [],
   bootstrap: [AppComponent],

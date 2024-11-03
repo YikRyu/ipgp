@@ -1,0 +1,119 @@
+<div class="col-sm-12 d-flex flex-column">
+  <div>
+    <button class="btn-input" (click)="showForm(true, false, false)">
+      <div class="d-flex align-items-center">
+        <i class="bi bi-plus btn-input-icon icon"></i
+        ><strong>Add New Reward</strong>
+      </div>
+    </button>
+  </div>
+
+  <div class="mt-2 col-sm-12">
+    <ng-container *ngIf="rewards.length > 0; else noRewards">
+      <div class="table-container">
+        <table mat-table [dataSource]="rewards" class="col-sm-12">
+          <ng-container matColumnDef="name">
+            <th mat-header-cell *matHeaderCellDef>Name</th>
+            <td mat-cell *matCellDef="let reward">{{ reward.name }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="category">
+            <th mat-header-cell *matHeaderCellDef>Category</th>
+            <td mat-cell *matCellDef="let reward">{{ reward.category.name }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="points">
+            <th mat-header-cell *matHeaderCellDef>Points</th>
+            <td mat-cell *matCellDef="let reward">{{ reward.points == null ? 0 : reward.points }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="quantity">
+            <th mat-header-cell *matHeaderCellDef>Quantity</th>
+            <td mat-cell *matCellDef="let reward">{{ reward.quantity }}</td>
+          </ng-container>
+          
+          <ng-container matColumnDef="limited">
+            <th mat-header-cell *matHeaderCellDef>Is Limited</th>
+            <td mat-cell *matCellDef="let reward">{{ reward.limited ? 'Yes' : 'No' }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="limitedTime">
+            <th mat-header-cell *matHeaderCellDef>Limited Time</th>
+            <td mat-cell *matCellDef="let reward">{{ reward.limitedTime }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="createdBy">
+            <th mat-header-cell *matHeaderCellDef>Created By</th>
+            <td mat-cell *matCellDef="let reward">
+              {{ reward.createdBy == null ? "" : reward.createdBy.name }}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="createdDate">
+            <th mat-header-cell *matHeaderCellDef>Created Date</th>
+            <td mat-cell *matCellDef="let reward">
+              {{ reward.createdDate | customeDate }}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="modifiedBy">
+            <th mat-header-cell *matHeaderCellDef>Modified By</th>
+            <td mat-cell *matCellDef="let reward">
+              {{ reward.modifiedBy == null ? "" : reward.modifiedBy.name }}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="modifiedDate">
+            <th mat-header-cell *matHeaderCellDef>Modified Date</th>
+            <td mat-cell *matCellDef="let reward">
+              {{ reward.modifiedDate | customeDate }}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef>Actions</th>
+            <td mat-cell *matCellDef="let reward">
+              <div class="d-flex">
+                <button
+                  class="btn-icon me-2"
+                  (click)="showForm(false, true, false, reward)"
+                >
+                  <i class="bi bi-pencil-fill icon"></i>
+                </button>
+                <button
+                  class="btn-icon text-danger me-2"
+                  (click)="showForm(false, false, true, reward)"
+                >
+                  <i class="bi bi-trash3-fill icon"></i>
+                </button>
+              </div>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+        </table>
+
+        <div class="mt-2 col-sm-12">
+          <mat-paginator
+            #paginator
+            (page)="handlePageEvent($event)"
+            [length]="totalItems"
+            [pageSize]="size"
+            [showFirstLastButtons]="true"
+            [pageSizeOptions]="pageSizeOptions"
+            [pageIndex]="page"
+            aria-label="Select page"
+          >
+          </mat-paginator>
+        </div>
+      </div>
+    </ng-container>
+  </div>
+</div>
+
+<ng-template #noRewards>
+  <div class="no-reward-container col-sm-12">
+    <h5>There is no Reward to display...</h5>
+  </div>
+</ng-template>

@@ -1,0 +1,75 @@
+<div class="modal-header">
+  <div class="d-flex col-sm-12 justify-content-between">
+    <h2 class="ms-2">
+      Reward Details
+    </h2>
+    <button class="btn-icon" (click)="closeDialog()">
+      <i class="bi bi-x-lg close-icon mb-2"></i>
+    </button>
+  </div>
+</div>
+
+<div class="border light-grey"></div>
+
+<div class="modal-content my-3">
+  <div class="d-flex flex-row col-sm-12">
+    <div class="catalog-picture-container">
+      <img
+        [src]="reward.image == null ? noImageSrc : reward.image"
+        class="catalog-picture"
+      />
+    </div>
+
+    <div class="ms-3 d-flex flex-column">
+      <div class="d-flex flex-row col-sm-12">
+        <div><strong>Reward Name: </strong></div>
+        <div class="ms-2"><span>{{reward.name}}</span></div>
+      </div>
+
+      <div class="d-flex flex-row col-sm-12 mt-2">
+        <div><strong>Description: </strong></div>
+        <div class="ms-2"><span>{{reward.description}}</span></div>
+      </div>
+
+      <div class="d-flex flex-row col-sm-12 mt-2">
+        <div><strong>Category: </strong></div>
+        <div class="ms-2"><span>{{reward.category.name}}</span></div>
+      </div>
+
+      <div class="d-flex flex-row col-sm-12 mt-2">
+        <div><strong>Points per Reward: </strong></div>
+        <div class="ms-2"><span>{{reward.points}}</span></div>
+      </div>
+
+      <ng-container *ngIf="reward.limited">
+        <div class="d-flex flex-row col-sm-12 mt-2">
+          <div><strong>Limited Until: </strong></div>
+          <div class="ms-2"><span>{{reward.limitedTime.toString() | customeDate}}</span></div>
+        </div>
+      </ng-container>
+    </div>
+  </div>
+</div>
+
+<div class="border light-grey"></div>
+
+<div class="modal-footer">
+  <div class="d-flex col-sm-12 justify-content-end mt-2">
+    <button class="btn-cancel me-2" (click)="closeDialog()">Close</button>
+    <button
+      class="btn-input me-2"
+      [disabled]="reward.limited && checkIsExpired(reward.limitedTime.toString())"
+      (click)="submit('redeem')"
+    >
+      Redeem Reward
+    </button>
+    <button
+      class="btn-input"
+      [disabled]="reward.limited && checkIsExpired(reward.limitedTime.toString())"
+      (click)="submit('addCart')"
+    >
+      Add to Cart
+    </button>
+  </div>
+</div>
+

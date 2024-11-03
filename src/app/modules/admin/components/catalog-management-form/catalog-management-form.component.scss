@@ -1,0 +1,9 @@
+@import '../../../../../styles.scss';
+
+.mat-input-element {
+  padding: 7px;
+}
+
+.mat-input.element::after{
+  content: none;
+}

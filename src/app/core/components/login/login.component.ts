@@ -1,10 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthenticationService } from '../../services/http/authentication.service';
 import { ToastService } from '../../services/services/toast.service';
 import { Router } from '@angular/router';
-import { debounceTime, distinctUntilChanged } from 'rxjs';
 import { LocalStorageService } from '../../services/services/local-storage.service';
+import { UserService } from '../../services/services/user.service';
 
 @Component({
   selector: 'app-login',
@@ -17,10 +17,6 @@ export class LoginComponent implements OnInit {
     password: [null, Validators.required],
   };
   public inputLoginFg: FormGroup = this.fb.group(this.inputLoginForm);
-  public errorMessages = {
-    email: '',
-    password: '',
-  };
   public validateMessages = {
     email: [
       { type: 'required', message: 'Please provide email!' },
@@ -35,6 +31,7 @@ export class LoginComponent implements OnInit {
     private fb: FormBuilder,
     private toastService: ToastService,
     private authService: AuthenticationService,
+    private userService: UserService,
     public router: Router,
     private localStorageService: LocalStorageService
   ) {}
@@ -47,7 +44,7 @@ export class LoginComponent implements OnInit {
   private loginCheck(){
     let currentUser = this.localStorageService.getItem('current-user');
     if(JSON.parse(currentUser)){
-      this.router.navigate(['/dashboard-home']);
+      this.router.navigate(['/recognition-dashboard']);
     }
   }
 
@@ -65,15 +62,19 @@ export class LoginComponent implements OnInit {
             );
             this.localStorageService.setItem('current-user', JSON.stringify(response));
             setTimeout(()=>{
-              this.router.navigate(['/dashboard-home']);
+              this.userService.getUserType();
               this.isLoggingIn = false;
+              this.toastService.clear();
+              this.router.navigate(['/recognition-dashboard']);
             }, 1500);
           },
           error: (error) => {
-            this.toastService.showError('Login failed. ' + error.message);
+            this.toastService.showError('Login failed. ' + error.error.message);
             this.isLoggingIn = false;
           },
         });
+    }else{
+      this.toastService.showError('Please provide all fields with value and with valid format!');
     }
   }
 }
