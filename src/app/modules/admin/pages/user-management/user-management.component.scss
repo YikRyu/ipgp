@@ -1,0 +1,14 @@
+@import '../../../../../styles.scss';
+
+.user-dashboard-container{
+  width: 90%;
+  margin-top: 4%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: white;
+  padding: 30px;
+  border-radius: 3px;
+  margin-bottom: 4%;
+}

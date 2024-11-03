@@ -1,0 +1,23 @@
+@import '../../../../styles.scss';
+
+.login-container{
+  min-height: 20vh;
+  max-height: 60vh;
+  width: 50vw;
+  margin: auto;
+  bottom: auto;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  background-color: white;
+  padding: 40px;
+  border-radius: 3px;
+}
+
+.login-wrapper{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}

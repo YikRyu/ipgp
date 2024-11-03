@@ -1,0 +1,502 @@
+<div class="content-wrapper">
+  <div class="recognition-dashboard-container box-shadow">
+    <div class="row col-sm-12">
+      <h2>Recognition Dashboard</h2>
+      <div class="border light-grey mb-2"></div>
+
+      <mat-tab-group
+        mat-stretch-tabs="false"
+        mat-align-tabs="start"
+        (selectedTabChange)="changeTab($event)"
+      >
+        <mat-tab label="All Recognitions" class="mx-3" *ngIf="isAdmin">
+          <div class="p-3">
+            <app-all-recognitions [isAdmin]="isAdmin"></app-all-recognitions>
+          </div>
+        </mat-tab>
+
+        <mat-tab label="My Recognitions" class="mx-3">
+          <div class="p-3">
+            <span class="mt-5">Review recognition submitted by you here.</span>
+            <div class="border light-grey mb-3"></div>
+
+            <div class="col-sm-12 d-flex flex-column">
+              <div>
+                <button class="btn-input" (click)="newRecognition()">
+                  <div class="d-flex align-items-center">
+                    <i class="bi bi-plus btn-input-icon icon"></i
+                    ><strong>New Recognition</strong>
+                  </div>
+                </button>
+              </div>
+
+              <div class="mt-2 col-sm-12">
+                <ng-container
+                  *ngIf="myRecognitions.length > 0; else noRecognitions"
+                >
+                  <div class="table-container">
+                    <table
+                      mat-table
+                      [dataSource]="myRecognitions"
+                      class="col-sm-12"
+                    >
+                      <ng-container matColumnDef="id">
+                        <th mat-header-cell *matHeaderCellDef>ID</th>
+                        <td mat-cell *matCellDef="let recognition">
+                          {{ recognition.id }}
+                        </td>
+                      </ng-container>
+
+                      <ng-container matColumnDef="title">
+                        <th mat-header-cell *matHeaderCellDef>Title</th>
+                        <td mat-cell *matCellDef="let recognition">
+                          <button
+                            class="btn-link"
+                            (click)="openDetails(recognition, false)"
+                          >
+                            {{ recognition.title }}
+                          </button>
+                        </td>
+                      </ng-container>
+
+                      <ng-container matColumnDef="points">
+                        <th
+                          mat-header-cell
+                          class="text-center"
+                          *matHeaderCellDef
+                        >
+                          Points
+                        </th>
+                        <td
+                          mat-cell
+                          class="text-center"
+                          *matCellDef="let recognition"
+                        >
+                          {{ recognition.points }}
+                        </td>
+                      </ng-container>
+
+                      <ng-container matColumnDef="status">
+                        <th
+                          mat-header-cell
+                          class="text-center"
+                          *matHeaderCellDef
+                        >
+                          Status
+                        </th>
+                        <td
+                          mat-cell
+                          class="text-center"
+                          *matCellDef="let recognition"
+                          [ngClass]="getStatusColor(recognition.status)"
+                        >
+                          {{ recognition.status | titlecase }}
+                        </td>
+                      </ng-container>
+
+                      <ng-container matColumnDef="createdDate">
+                        <th mat-header-cell *matHeaderCellDef>Created Date</th>
+                        <td mat-cell *matCellDef="let recognition">
+                          {{ recognition.createdDate | customeDate }}
+                        </td>
+                      </ng-container>
+
+                      <ng-container matColumnDef="modifiedBy">
+                        <th
+                          mat-header-cell
+                          class="text-center"
+                          *matHeaderCellDef
+                        >
+                          Modified By
+                        </th>
+                        <td
+                          mat-cell
+                          class="text-center"
+                          *matCellDef="let recognition"
+                        >
+                          {{
+                            recognition.modifiedBy == null
+                              ? ""
+                              : recognition.modifiedBy.name
+                          }}
+                        </td>
+                      </ng-container>
+
+                      <ng-container matColumnDef="modifiedDate">
+                        <th mat-header-cell *matHeaderCellDef>Modified Date</th>
+                        <td mat-cell *matCellDef="let recognition">
+                          {{ recognition.modifiedDate | customeDate }}
+                        </td>
+                      </ng-container>
+
+                      <ng-container matColumnDef="actions">
+                        <th mat-header-cell *matHeaderCellDef>Actions</th>
+                        <td mat-cell *matCellDef="let recognition">
+                          <div class="d-flex">
+                            <button
+                              class="btn-icon me-2"
+                              [ngClass]="{
+                                'disabled-icon text-secondary':
+                                  recognition.status == 'cancel' ||
+                                  recognition.status == 'approved'
+                              }"
+                              (click)="openDetails(recognition, true)"
+                              [disabled]="recognition.status == 'cancel' ||
+                                  recognition.status == 'approved'"
+                            >
+                              <i class="bi bi-pencil-fill icon"></i>
+                            </button>
+                            <button
+                              class="btn-icon me-2"
+                              [ngClass]="
+                                recognition.status == 'cancel' ||
+                                recognition.status == 'approved'
+                                  ? 'text-secondary disabled-icon'
+                                  : 'text-danger'
+                              "
+                              (click)="cancelRecognition(recognition)"
+                              [disabled]="recognition.status == 'cancel' ||
+                                  recognition.status == 'approved'" 
+                            >
+                              <i class="bi bi-trash3-fill icon"></i>
+                            </button>
+                          </div>
+                        </td>
+                      </ng-container>
+
+                      <tr
+                        mat-header-row
+                        *matHeaderRowDef="displayedColumns"
+                      ></tr>
+                      <tr
+                        mat-row
+                        *matRowDef="let row; columns: displayedColumns"
+                      ></tr>
+                    </table>
+
+                    <div class="mt-2 col-sm-12">
+                      <mat-paginator
+                        #myPaginator
+                        (page)="handlePageEvent($event)"
+                        [length]="myTotalItems"
+                        [pageSize]="mySize"
+                        [showFirstLastButtons]="true"
+                        [pageSizeOptions]="pageSizeOptions"
+                        [pageIndex]="myPage"
+                        aria-label="Select page"
+                      >
+                      </mat-paginator>
+                    </div>
+                  </div>
+                </ng-container>
+              </div>
+            </div>
+          </div>
+        </mat-tab>
+
+        <mat-tab label="Pending Approval" class="mx-3">
+          <div class="p-3">
+            <span class="mt-2"
+              >Review recognition require your approval here.</span
+            >
+            <div class="border light-grey mb-3"></div>
+
+            <div class="mt-2 col-sm-12">
+              <ng-container
+                *ngIf="approvalRecognitions.length > 0; else noRecognitions"
+              >
+                <div class="table-container">
+                  <table
+                    mat-table
+                    [dataSource]="approvalRecognitions"
+                    class="col-sm-12"
+                  >
+                    <ng-container matColumnDef="id">
+                      <th mat-header-cell *matHeaderCellDef>ID</th>
+                      <td mat-cell *matCellDef="let recognition">
+                        {{ recognition.id }}
+                      </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="title">
+                      <th mat-header-cell *matHeaderCellDef>Title</th>
+                      <td mat-cell *matCellDef="let recognition">
+                        <button
+                          class="btn-link"
+                          (click)="openDetails(recognition, false)"
+                        >
+                          {{ recognition.title }}
+                        </button>
+                      </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="points">
+                      <th mat-header-cell class="text-center" *matHeaderCellDef>
+                        Points
+                      </th>
+                      <td
+                        mat-cell
+                        class="text-center"
+                        *matCellDef="let recognition"
+                      >
+                        {{ recognition.points }}
+                      </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="status">
+                      <th mat-header-cell class="text-center" *matHeaderCellDef>
+                        Status
+                      </th>
+                      <td
+                        mat-cell
+                        class="text-center"
+                        *matCellDef="let recognition"
+                        [ngClass]="getStatusColor(recognition.status)"
+                      >
+                        {{ recognition.status | titlecase }}
+                      </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="createdDate">
+                      <th mat-header-cell *matHeaderCellDef>Created Date</th>
+                      <td mat-cell *matCellDef="let recognition">
+                        {{ recognition.createdDate | customeDate }}
+                      </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="modifiedBy">
+                      <th mat-header-cell class="text-center" *matHeaderCellDef>
+                        Modified By
+                      </th>
+                      <td
+                        mat-cell
+                        class="text-center"
+                        *matCellDef="let recognition"
+                      >
+                        {{
+                          recognition.modifiedBy == null
+                            ? ""
+                            : recognition.modifiedBy.name
+                        }}
+                      </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="modifiedDate">
+                      <th mat-header-cell *matHeaderCellDef>Modified Date</th>
+                      <td mat-cell *matCellDef="let recognition">
+                        {{ recognition.modifiedDate | customeDate }}
+                      </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="actions">
+                      <th mat-header-cell *matHeaderCellDef>Actions</th>
+                      <td mat-cell *matCellDef="let recognition">
+                        <div class="d-flex">
+                          <button
+                            class="btn-icon me-2"
+                            [ngClass]="{
+                              'disabled-icon text-secondary':
+                                recognition.status == 'cancel' ||
+                                recognition.status == 'approved'
+                            }"
+                            (click)="openDetails(recognition, true)"
+                            [disabled]="recognition.status == 'cancel' || recognition.status == 'approved'"
+                          >
+                            <i class="bi bi-pencil-fill icon"></i>
+                          </button>
+                          <button
+                            class="btn-icon me-2"
+                            [ngClass]="
+                              recognition.status == 'cancel' ||
+                              recognition.status == 'approved'
+                                ? ' disabled-icon text-secondary '
+                                : 'text-danger'
+                            "
+                            (click)="cancelRecognition(recognition)"
+                            [disabled]="recognition.status == 'cancel' || recognition.status == 'approved'"
+                          >
+                            <i class="bi bi-trash3-fill icon"></i>
+                          </button>
+                        </div>
+                      </td>
+                    </ng-container>
+
+                    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                    <tr
+                      mat-row
+                      *matRowDef="let row; columns: displayedColumns"
+                    ></tr>
+                  </table>
+
+                  <div class="mt-2 col-sm-12">
+                    <mat-paginator
+                      #approvalPaginator
+                      (page)="handlePageEvent($event)"
+                      [length]="approvalTotalItems"
+                      [pageSize]="approvalSize"
+                      [showFirstLastButtons]="true"
+                      [pageSizeOptions]="pageSizeOptions"
+                      [pageIndex]="approvalPage"
+                      aria-label="Select page"
+                    >
+                    </mat-paginator>
+                  </div>
+                </div>
+              </ng-container>
+            </div>
+          </div>
+        </mat-tab>
+
+        <mat-tab label="Peer" class="mx-3">
+          <div class="p-3">
+            <span class="mt-2"
+              >Review peer recognition submitted by other colleagues here.</span
+            >
+            <div class="border light-grey mb-3"></div>
+            
+            <div class="mt-2 col-sm-12">
+              <ng-container
+                *ngIf="peerRecognitions.length > 0; else noRecognitions"
+              >
+                <div class="table-container">
+                  <table
+                    mat-table
+                    [dataSource]="peerRecognitions"
+                    class="col-sm-12"
+                  >
+                    <ng-container matColumnDef="id">
+                      <th mat-header-cell *matHeaderCellDef>ID</th>
+                      <td mat-cell *matCellDef="let recognition">
+                        {{ recognition.id }}
+                      </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="title">
+                      <th mat-header-cell *matHeaderCellDef>Title</th>
+                      <td mat-cell *matCellDef="let recognition">
+                        <button
+                          class="btn-link"
+                          (click)="openDetails(recognition, false)"
+                        >
+                          {{ recognition.title }}
+                        </button>
+                      </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="points">
+                      <th mat-header-cell class="text-center" *matHeaderCellDef>
+                        Points
+                      </th>
+                      <td
+                        mat-cell
+                        class="text-center"
+                        *matCellDef="let recognition"
+                      >
+                        {{ recognition.points }}
+                      </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="status">
+                      <th mat-header-cell *matHeaderCellDef>Status</th>
+                      <td
+                        mat-cell
+                        *matCellDef="let recognition"
+                        [ngClass]="getStatusColor(recognition.status)"
+                      >
+                        {{ recognition.status | titlecase }}
+                      </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="createdBy">
+                      <th mat-header-cell class="text-center" *matHeaderCellDef>
+                        Submitted By
+                      </th>
+                      <td
+                        mat-cell
+                        class="text-center"
+                        *matCellDef="let recognition"
+                      >
+                        {{ recognition.createdBy.name }}
+                      </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="createdDate">
+                      <th mat-header-cell *matHeaderCellDef>Created Date</th>
+                      <td mat-cell *matCellDef="let recognition">
+                        {{ recognition.createdDate | customeDate}}
+                      </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="modifiedBy">
+                      <th mat-header-cell class="text-center" *matHeaderCellDef>
+                        Modified By
+                      </th>
+                      <td
+                        mat-cell
+                        class="text-center"
+                        *matCellDef="let recognition"
+                      >
+                        {{
+                          recognition.modifiedBy == null
+                            ? ""
+                            : recognition.modifiedBy.name
+                        }}
+                      </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="modifiedDate">
+                      <th mat-header-cell *matHeaderCellDef>Modified Date</th>
+                      <td mat-cell *matCellDef="let recognition">
+                        {{ recognition.modifiedDate | customeDate}}
+                      </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="actions">
+                      <th mat-header-cell [hidden]="true" *matHeaderCellDef>
+                        Actions
+                      </th>
+                      <td
+                        mat-cell
+                        [hidden]="true"
+                        *matCellDef="let recognition"
+                      ></td>
+                    </ng-container>
+
+                    <tr
+                      mat-header-row
+                      *matHeaderRowDef="peerDisplayedColumns"
+                    ></tr>
+                    <tr
+                      mat-row
+                      *matRowDef="let row; columns: peerDisplayedColumns"
+                    ></tr>
+                  </table>
+
+                  <div class="mt-2 col-sm-12">
+                    <mat-paginator
+                      #peerPaginator
+                      (page)="handlePageEvent($event)"
+                      [length]="peerTotalItems"
+                      [pageSize]="peerSize"
+                      [showFirstLastButtons]="true"
+                      [pageSizeOptions]="pageSizeOptions"
+                      [pageIndex]="peerPage"
+                      aria-label="Select page"
+                    >
+                    </mat-paginator>
+                  </div>
+                </div>
+              </ng-container>
+            </div>
+          </div>
+        </mat-tab>
+      </mat-tab-group>
+    </div>
+  </div>
+</div>
+
+<ng-template #noRecognitions>
+  <div class="no-recognitions-container col-sm-12">
+    <h5>There is no Recognitions to display...</h5>
+  </div>
+</ng-template>

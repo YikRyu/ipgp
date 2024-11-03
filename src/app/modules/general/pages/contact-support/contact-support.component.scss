@@ -1,0 +1,32 @@
+@import '../../../../../styles.scss';
+
+.contact-support-container{
+  min-height: 20vh;
+  max-height: 60vh;
+  width: 50vw;
+  margin: auto;
+  bottom: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: white;
+  padding: 40px;
+  border-radius: 3px;
+  text-align: center;
+}
+
+.wrapper{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+p{
+  font-size: 30px;
+}
+
+button{
+  font-size: 25px;
+}

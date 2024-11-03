@@ -1,0 +1,32 @@
+<div class="modal-header">
+  <div class="d-flex col-sm-12 justify-content-between">
+    <h2 class="ms-2">
+      Cancel Recognition
+    </h2>
+    <button class="btn-icon" (click)="closeDialog()">
+      <i class="bi bi-x-lg close-icon mb-2"></i>
+    </button>
+  </div>
+</div>
+
+<div class="border light-grey"></div>
+
+<div class="modal-content my-3">
+  <p>Are you sure you want to cancel this recognition? <br/><span class="text-danger">This action cannot be undone!</span></p>
+  <strong>{{recognition.title}}</strong>
+</div>
+
+<div class="border light-grey"></div>
+
+<div class="modal-footer">
+  <div class="d-flex col-sm-12 justify-content-end mt-2">
+    <button class="btn-cancel me-2" (click)="closeDialog()">Cancel</button>
+    <button
+      class="btn-input bg-danger"
+      (click)="onConfirm()"
+    >
+      Confirm
+    </button>
+  </div>
+</div>
+

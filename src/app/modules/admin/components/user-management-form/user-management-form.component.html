@@ -1,0 +1,265 @@
+<div class="modal-header">
+  <div class="d-flex col-sm-12 justify-content-between">
+    <h2 class="ms-2">
+      <ng-container *ngIf="isEdit">Update User</ng-container>
+      <ng-container *ngIf="isAdd">Add New User/Admin</ng-container>
+    </h2>
+    <button class="btn-icon" (click)="closeDialog()">
+      <i class="bi bi-x-lg close-icon mb-2"></i>
+    </button>
+  </div>
+</div>
+
+<div class="border light-grey"></div>
+
+<div class="modal-content my-3">
+  <form [formGroup]="updateProfileFg" class="col-sm-12">
+    <ng-container *ngIf="isAdd">
+      <div class="row col-sm-12 justify-content-center mb-2">
+        <div class="d-flex">
+          <label for="id"
+            ><strong>Employee ID<span class="text-danger">*</span>:</strong></label
+          >
+          <div class="d-flex flex-column col-sm-9 ms-2">
+            <input
+              class="col-sm-7"
+              type="text"
+              formControlName="id"
+              placeholder="Enter Employee ID"
+            />
+            <ng-container
+              *ngIf="
+                updateProfileFg.get('id').touched &&
+                updateProfileFg.get('id').invalid
+              "
+            >
+              <div *ngFor="let validate of validateMessages.id">
+                <span class="text-danger text-justify">{{
+                  validate.message
+                }}</span>
+              </div>
+            </ng-container>
+          </div>
+        </div>
+
+        <div class="d-flex mt-2">
+          <label for="email"
+            ><strong>Email<span class="text-danger">*</span>:</strong></label
+          >
+          <div class="d-flex flex-column col-sm-9 ms-2">
+            <input
+              class="col-sm-7"
+              type="text"
+              formControlName="email"
+              placeholder="Enter Email"
+            />
+            <ng-container *ngIf="updateProfileFg.get('email').touched && updateProfileFg.get('email').invalid">
+              <div *ngFor="let validate of validateMessages.email">
+                <span class="text-danger">
+                  <ng-container *ngIf="updateProfileFg.get('email').getError('required') && validate.type.match('required')"> {{ validate.message }}</ng-container>
+                  <ng-container *ngIf="updateProfileFg.get('email').getError('email') && validate.type.match('email')"> {{ validate.message }}</ng-container>
+                  </span>
+              </div>
+            </ng-container>
+          </div>
+        </div>
+  
+        <div class="d-flex mt-2">
+          <label for="password"
+            ><strong>Password<span class="text-danger">*</span>:</strong></label
+          >
+          <div class="d-flex flex-column col-sm-9 ms-2">
+            <input
+              class="col-sm-7"
+              type="password"
+              formControlName="password"
+              placeholder="Enter Password"
+            />
+            <ng-container
+            *ngIf="
+              updateProfileFg.get('password').touched &&
+              updateProfileFg.get('password').invalid
+            "
+          >
+            <div *ngFor="let validate of validateMessages.password">
+              <span class="text-danger text-justify">
+                <ng-container *ngIf="updateProfileFg.get('password').getError('required') && validate.type.match('required')"> {{ validate.message }}</ng-container>
+                <ng-container *ngIf="updateProfileFg.get('password').getError('pattern') && validate.type.match('pattern')"> {{ validate.message }}</ng-container>
+              </span>
+            </div>
+          </ng-container>
+          </div>
+        </div>
+
+        <div class="border light-grey mt-2"></div>
+      </div>
+    </ng-container>
+    
+
+    <div class="row col-sm-12 justify-content-center">
+      <div class="d-flex">
+        <label for="name"
+          ><strong>Full Name<span class="text-danger">*</span>:</strong></label
+        >
+        <div class="d-flex flex-column col-sm-9 ms-2">
+          <input
+            class="col-sm-7"
+            type="text"
+            formControlName="name"
+            placeholder="Enter Full Name"
+          />
+          <ng-container
+            *ngIf="
+              updateProfileFg.get('name').touched &&
+              updateProfileFg.get('name').invalid
+            "
+          >
+            <div *ngFor="let validate of validateMessages.name">
+              <span class="text-danger text-justify">{{
+                validate.message
+              }}</span>
+            </div>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="d-flex mt-2">
+        <label for="type"
+          ><strong
+            >User Type<span class="text-danger">*</span>:</strong
+          ></label
+        >
+        <div class="d-flex flex-column col-sm-4 ms-2" ngbDropdown>
+          <button
+            class="dropdown-container"
+            type="text"
+            ngbDropdownToggle
+          >
+            <div class="d-flex justify-content-between align-items-center">
+              <span>{{
+                updateProfileFg.get("type").value | titlecase
+              }}</span>
+              <i class="bi bi-caret-down-fill dropdown-icon"></i>
+            </div>
+          </button>
+          <div ngbDropdownMenu aria-labelledby="type">
+            <button
+              class="custom-dropdown"
+              *ngFor="let type of userTypeList"
+              (click)="selectType(type)"
+              ngbDropdownItem
+            >
+              {{ type | titlecase }}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="d-flex mt-2">
+        <label for="position"
+          ><strong>Position<span class="text-danger">*</span>:</strong></label
+        >
+        <div class="d-flex flex-column col-sm-9 ms-2">
+          <input
+            class="col-sm-7"
+            type="text"
+            formControlName="position"
+            placeholder="Enter Position"
+          />
+          <ng-container
+            *ngIf="
+              !updateProfileFg.get('position').pristine &&
+              updateProfileFg.get('position').invalid
+            "
+          >
+            <div *ngFor="let validate of validateMessages.position">
+              <span class="text-danger text-justify">{{
+                validate.message
+              }}</span>
+            </div>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="d-flex mt-2">
+        <label for="department"
+          ><strong>Department<span class="text-danger">*</span>:</strong></label
+        >
+        <div class="d-flex flex-column col-sm-9 ms-2">
+          <input
+            class="col-sm-7"
+            type="text"
+            formControlName="department"
+            placeholder="Enter Department"
+          />
+          <ng-container
+            *ngIf="
+              !updateProfileFg.get('department').pristine &&
+              updateProfileFg.get('department').invalid
+            "
+          >
+            <div *ngFor="let validate of validateMessages.department">
+              <span class="text-danger text-justify">{{
+                validate.message
+              }}</span>
+            </div>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="d-flex mt-2">
+        <label for="contact"><strong>Contact Number:</strong></label>
+        <div class="d-flex flex-column col-sm-9 ms-2">
+          <input
+            class="col-sm-7"
+            type="number"
+            formControlName="contact"
+            placeholder="Enter Contact Number"
+          />
+          <ng-container
+            *ngIf="
+              !updateProfileFg.get('contact').pristine &&
+              updateProfileFg.get('contact').invalid
+            "
+          >
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="d-flex mt-2">
+        <label for="address"><strong>Address:</strong></label>
+        <div class="d-flex flex-column col-sm-9 row-sm-4 ms-2">
+          <textarea
+            class="col-sm-10"
+            type="text"
+            formControlName="address"
+            placeholder="Enter Home Address"
+          >
+          </textarea>
+          <ng-container
+            *ngIf="
+              !updateProfileFg.get('address').pristine &&
+              updateProfileFg.get('address').invalid
+            "
+          >
+          </ng-container>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+
+<div class="border light-grey"></div>
+
+<div class="modal-footer">
+  <div class="d-flex col-sm-12 justify-content-end mt-2">
+    <button class="btn-cancel me-2" (click)="closeDialog()">Cancel</button>
+    <button
+      class="btn-input"
+      [disabled]="isSubmitDisabled"
+      (click)="submitForm()"
+    >
+      Save
+    </button>
+  </div>
+</div>

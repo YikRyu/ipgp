@@ -1,0 +1,42 @@
+<div class="header-container header-footer">
+  <a [routerLink]="['/recognition-dashboard']" class="no-underline col-sm-2">
+    <div class="d-flex">
+      <img src="../../../../assets/img/logo.png" class="logo me-1" />
+      <h1 class="text-white">Pravo</h1>
+    </div>
+  </a>
+
+  <div class="col-sm-10 d-flex flex-row justify-content-end ps-4 h-100">
+    <div
+      class="me-2"
+      *ngFor="let navItem of navList; let i = index"
+    >
+      <button
+        class="h-100 d-flex align-items-center"
+        [ngClass]="navItem.route === router.url ? 'active-nav-link' : 'nav-link'"
+        (click)="navigate(navItem.route)"
+      >
+        {{ navItem.title }}
+      </button>
+    </div>
+
+    <button
+      class="nav-btn me-2"
+      (click)="router.navigate(['/new-recognition'])"
+    >
+      New Recognition
+    </button>
+    <button class="nav-btn me-1" (click)="router.navigate(['/reward-catalog'])">
+      Redeem Reward
+    </button>
+    <div class="pt-2 justify-content-center align-items-center profile-container" ngbDropdown>
+      <button class="profile-btn " id="profile" ngbDropdownToggle>
+        <i class="bi bi-person-circle profile-icon"></i>
+      </button>
+      <div ngbDropdownMenu aria-labelledby="profile">
+        <button class="custom-dropdown" ngbDropdownItem (click)="router.navigate(['/user-profile'])">User Profile</button>
+        <button class="custom-dropdown" ngbDropdownItem (click)="logout()">Logout</button>
+      </div>
+    </div>
+  </div>
+</div>

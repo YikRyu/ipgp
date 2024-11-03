@@ -1,0 +1,194 @@
+<div class="content-wrapper">
+  <div class="new-recognition-container box-shadow">
+    <div class="row col-sm-12">
+      <h2>New Recognition</h2>
+      <div class="border light-grey mb-2"></div>
+
+      <div class="d-flex flex-column">
+        <form [formGroup]="inputNewRecognitionFg" class="my-3 col-sm-12">
+          <div class="row col-sm-12">
+            <div class="d-flex col-sm-12">
+              <label for="title"
+                ><strong
+                  >Title<span class="text-danger">*</span>:</strong
+                ></label
+              >
+              <div class="d-flex flex-column col-sm-7 ms-2">
+                <input
+                  class="col-sm-7"
+                  type="text"
+                  formControlName="title"
+                  placeholder="Enter Recognition Title"
+                />
+                <ng-container
+                  *ngIf="
+                    !inputNewRecognitionFg.get('title').pristine &&
+                    inputNewRecognitionFg.get('title').invalid
+                  "
+                >
+                  <div *ngFor="let validate of validateMessages.title">
+                    <span class="text-danger text-justify">{{
+                      validate.message
+                    }}</span>
+                  </div>
+                </ng-container>
+              </div>
+            </div>
+
+            <div class="d-flex col-sm-12 mt-2">
+              <label for="description"
+                ><strong
+                  >Description<span class="text-danger">*</span>:</strong
+                ></label
+              >
+              <div class="d-flex flex-column col-sm-7 ms-2">
+                <textarea
+                  class="col-sm-9 row-sm-10"
+                  type="text"
+                  formControlName="description"
+                  placeholder="Enter Recognition Description"
+                ></textarea>
+                <ng-container
+                  *ngIf="
+                    !inputNewRecognitionFg.get('description').pristine &&
+                    inputNewRecognitionFg.get('description').invalid
+                  "
+                >
+                  <div *ngFor="let validate of validateMessages.description">
+                    <span class="text-danger text-justify">{{
+                      validate.message
+                    }}</span>
+                  </div>
+                </ng-container>
+              </div>
+            </div>
+
+            <div class="d-flex flex-row col-sm-12 mt-2">
+              <div class="d-flex col-sm-4 me-2">
+                <label for="type">
+                  <strong
+                    >Recognition Type<span class="text-danger">*</span>:</strong
+                  >
+                </label>
+                <div class="d-flex flex-column col-sm-5 ms-2" placement="bottom" ngbDropdown>
+                  <button
+                    class="dropdown-container"
+                    id="type"
+                    ngbDropdownToggle
+                  >
+                    <div
+                      class="d-flex justify-content-between align-items-center"
+                    >
+                      <span>{{
+                        inputNewRecognitionFg.get("type").value != null
+                          ? (inputNewRecognitionFg
+                              .get("type")
+                              .value)
+                          : null
+                      }}</span>
+                      <i class="bi bi-caret-down-fill dropdown-icon"></i>
+                    </div>
+                  </button>
+                  <div ngbDropdownMenu aria-labelledby="type">
+                    <button
+                      class="custom-dropdown"
+                      *ngFor="let type of recognitionTypeList"
+                      (click)="selectType(type)"
+                      ngbDropdownItem
+                    >
+                      {{ type | titlecase }}
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="d-flex col-sm-8">
+                <ng-container *ngIf="recognitionType == 'self'">
+                  <label for="referee"
+                    ><strong
+                      >Referee<span class="text-danger">*</span>:</strong
+                    ></label
+                  >
+                  <div class="d-flex flex-column col-sm-7 ms-2">
+                    <input
+                      class="col-sm-9"
+                      type="text"
+                      formControlName="referee"
+                      placeholder="Enter Self Recognition Referee"
+                      [ngbTypeahead]="typeahead"
+                      [inputFormatter]="formatter"
+                      [resultFormatter]="formatter"
+                    />
+                    <ng-container
+                      *ngIf="
+                        !inputNewRecognitionFg.get('referee').pristine &&
+                        inputNewRecognitionFg.get('referee').invalid
+                      "
+                    >
+                      <div
+                        *ngFor="let validate of validateMessages.referee"
+                      >
+                        <span class="text-danger text-justify">{{
+                          validate.message
+                        }}</span>
+                      </div>
+                    </ng-container>
+                  </div>
+                </ng-container>
+
+                <ng-container *ngIf="recognitionType == 'peer'">
+                  <label for="peer"
+                    ><strong
+                      >Peer<span class="text-danger">*</span>:</strong
+                    ></label
+                  >
+                  <div class="d-flex flex-column col-sm-7 ms-2">
+                    <input
+                      class="col-sm-9"
+                      type="text"
+                      formControlName="peer"
+                      placeholder="Enter Peer"
+                      [ngbTypeahead]="typeahead"
+                      [inputFormatter]="formatter"
+                      [resultFormatter]="formatter"
+                    />
+                    <ng-container
+                      *ngIf="
+                        !inputNewRecognitionFg.get('peer').pristine &&
+                        inputNewRecognitionFg.get('peer').invalid
+                      "
+                    >
+                      <div
+                        *ngFor="let validate of validateMessages.peer"
+                      >
+                        <span class="text-danger text-justify">{{
+                          validate.message
+                        }}</span>
+                      </div>
+                    </ng-container>
+                  </div>
+                </ng-container>
+              </div>
+            </div>
+          </div>
+        </form>
+
+        <div class="border light-grey mb-2"></div>
+        <div class="d-flex col-sm-12 justify-content-end">
+          <button class="btn-cancel me-2" (click)="resetForm()">
+            Reset Form
+          </button>
+          <button
+            class="btn-input"
+            [disabled]="isSubmitDisabled"
+            (click)="submitForm()"
+          >
+            <ng-container *ngIf="isSubmitting"><mat-spinner diameter="30"></mat-spinner></ng-container>
+            <ng-container *ngIf="!isSubmitting">Submit New Recognition</ng-container>
+            
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

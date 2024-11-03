@@ -1,0 +1,335 @@
+<div class="modal-header">
+  <div class="d-flex col-sm-12 justify-content-between">
+    <h2 class="ms-2">
+      {{ isUpdate ? "Update Recognition" : "Recognition Details" }}
+    </h2>
+    <button class="btn-icon" (click)="closeDialog()">
+      <i class="bi bi-x-lg close-icon mb-2"></i>
+    </button>
+  </div>
+</div>
+
+<div class="border light-grey"></div>
+
+<div class="modal-content">
+  <div class="d-flex flex-column">
+    <form [formGroup]="inputRecognitionFg" class="my-3 col-sm-12">
+      <div class="row col-sm-12">
+        <div class="d-flex col-sm-12">
+          <label for="title"><strong>Title:</strong></label>
+          <div class="d-flex flex-column ms-2">
+            <span>{{ recognition.title }}</span>
+          </div>
+        </div>
+
+        <div class="d-flex col-sm-12 mt-2">
+          <label for="description"><strong>Description:</strong></label>
+          <div class="d-flex flex-column ms-2">
+            <span>{{ recognition.description }}</span>
+          </div>
+        </div>
+
+        <div class="d-flex col-sm-12 mt-2">
+          <label for="createdBy"><strong>Submitted By:</strong></label>
+          <div class="d-flex flex-column ms-2">
+            <span>{{ recognition.createdBy.name }}</span>
+          </div>
+        </div>
+
+        <div class="d-flex flex-row col-sm-12 mt-2">
+          <div class="d-flex col-sm-4 me-2">
+            <label for="points">
+              <strong>Points:</strong>
+            </label>
+            <ng-container
+              *ngIf="
+                disableApprovalAndPoints(recognition);
+                else pointsView
+              "
+            >
+              <input
+                class="col-sm-7 ms-2"
+                type="number"
+                formControlName="points"
+                placeholder="Enter Reward points"
+              />
+              <ng-container
+                  *ngIf="
+                    !inputRecognitionFg.get('points').pristine &&
+                    inputRecognitionFg.get('points').invalid
+                  "
+                >
+                  <div *ngFor="let validate of validateMessages.points">
+                    <span class="text-danger text-justify">{{
+                      validate.message
+                    }}</span>
+                  </div>
+                </ng-container>
+            </ng-container>
+            <ng-template #pointsView>
+              <div class="d-flex flex-column ms-2">
+                <span>{{ recognition.points }}</span>
+              </div>
+            </ng-template>
+          </div>
+        </div>
+
+        <div class="d-flex flex-row col-sm-12 mt-2">
+          <div class="d-flex col-sm-4 me-2">
+            <label for="type">
+              <strong>Recognition Type:</strong>
+            </label>
+            <div class="d-flex flex-column ms-2">
+              <span>{{ recognition.type | titlecase }}</span>
+            </div>
+          </div>
+
+          <ng-container *ngIf="recognitionType == 'peer'">
+            <div class="d-flex col-sm-8">
+              <label for="peer"><strong>Peer:</strong></label>
+              <div class="d-flex flex-column col-sm-7 ms-2">
+                <span>{{ recognition.peer.name }}</span>
+              </div>
+            </div>
+          </ng-container>
+        </div>
+
+        <ng-container *ngIf="recognitionType == 'self'">
+          <div class="d-flex flex-row col-sm-12 mt-2">
+            <div class="d-flex col-sm-4">
+              <label for="referee"><strong>Referee:</strong></label>
+              <div class="d-flex flex-column col-sm-7 ms-2">
+                <span>{{ recognition.referee.name }}</span>
+              </div>
+            </div>
+
+            <div class="d-flex col-sm-6">
+              <label for="refereeApproval"
+                ><strong>Referee Approval:</strong></label
+              >
+              <ng-container
+                *ngIf="
+                  isUpdate && recognition.referee.id == userId;
+                  else refereeApprovalView
+                "
+              >
+                <div
+                  class="d-flex flex-column col-sm-4 ms-2"
+                  placement="bottom"
+                  ngbDropdown
+                >
+                  <button
+                    class="dropdown-container"
+                    id="refereeApproval"
+                    ngbDropdownToggle
+                  >
+                    <div
+                      class="d-flex justify-content-between align-items-center"
+                    >
+                      <span
+                        [ngClass]="
+                          inputRecognitionFg.get('refereeApproval').value ==
+                          null
+                            ? 'text-warning'
+                            : inputRecognitionFg.get('refereeApproval').value !=
+                                null &&
+                              inputRecognitionFg.get('refereeApproval').value ==
+                                true
+                            ? 'text-success'
+                            : 'text-danger'
+                        "
+                        >{{
+                          inputRecognitionFg.get("refereeApproval").value ==
+                          null
+                            ? "Pending"
+                            : inputRecognitionFg.get("refereeApproval").value !=
+                                null &&
+                              inputRecognitionFg.get("refereeApproval").value ==
+                                true
+                            ? "Approved"
+                            : "Rejected"
+                        }}</span
+                      >
+                      <i class="bi bi-caret-down-fill dropdown-icon"></i>
+                    </div>
+                  </button>
+                  <div ngbDropdownMenu aria-labelledby="refereeApproval">
+                    <div class="dropdown-content-container">
+                      <button
+                        class="custom-dropdown"
+                        (click)="setApproval('referee', true)"
+                        ngbDropdownItem
+                      >
+                        Approve
+                      </button>
+                      <button
+                        class="custom-dropdown"
+                        (click)="setApproval('referee', false)"
+                        ngbDropdownItem
+                      >
+                        Reject
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </ng-container>
+              <ng-template #refereeApprovalView>
+                <span
+                  class="ms-2"
+                  [ngClass]="
+                    recognition.refereeApproval == null
+                      ? 'text-warning'
+                      : recognition.refereeApproval != null &&
+                        recognition.refereeApproval == true
+                      ? 'text-success'
+                      : 'text-danger'
+                  "
+                  >{{
+                    recognition.refereeApproval == null
+                      ? "Pending"
+                      : recognition.refereeApproval != null &&
+                        recognition.refereeApproval == true
+                      ? "Approved"
+                      : "Rejected"
+                  }}</span
+                >
+              </ng-template>
+            </div>
+          </div>
+        </ng-container>
+
+        <div class="d-flex col-sm-12 mt-2">
+          <label for="status"><strong>Status:</strong></label>
+          <div class="d-flex flex-column col-sm-7 ms-2">
+            <span [ngClass]="getStatusColor(recognition.status)">{{
+              recognition.status | titlecase
+            }}</span>
+          </div>
+        </div>
+
+        <div class="d-flex flex-row col-sm-12 mt-2">
+          <div class="d-flex col-sm-4 me-2">
+            <label for="type">
+              <strong>Admin Approval:</strong>
+            </label>
+            <ng-container
+              *ngIf="
+                disableApprovalAndPoints(recognition);
+                else adminApprovalView
+              "
+            >
+            <div
+            class="d-flex flex-column col-sm-4 ms-2"
+            placement="bottom"
+            ngbDropdown
+          >
+            <button
+              class="dropdown-container"
+              id="adminApproval"
+              ngbDropdownToggle
+            >
+              <div
+                class="d-flex justify-content-between align-items-center"
+              >
+                <span
+                  [ngClass]="
+                    inputRecognitionFg.get('adminApproval').value ==
+                    null
+                      ? 'text-warning'
+                      : inputRecognitionFg.get('adminApproval').value !=
+                          null &&
+                        inputRecognitionFg.get('adminApproval').value ==
+                          true
+                      ? 'text-success'
+                      : 'text-danger'
+                  "
+                  >{{
+                    inputRecognitionFg.get("adminApproval").value ==
+                    null
+                      ? "Pending"
+                      : inputRecognitionFg.get("adminApproval").value !=
+                          null &&
+                        inputRecognitionFg.get("adminApproval").value ==
+                          true
+                      ? "Approved"
+                      : "Rejected"
+                  }}</span
+                >
+                <i class="bi bi-caret-down-fill dropdown-icon"></i>
+              </div>
+            </button>
+            <div ngbDropdownMenu aria-labelledby="adminApproval">
+              <div class="dropdown-content-container">
+                <button
+                  class="custom-dropdown"
+                  (click)="setApproval('admin', true)"
+                  ngbDropdownItem
+                >
+                  Approve
+                </button>
+                <button
+                  class="custom-dropdown"
+                  (click)="setApproval('admin', false)"
+                  ngbDropdownItem
+                >
+                  Reject
+                </button>
+              </div>
+            </div>
+          </div>
+            </ng-container>
+            <ng-template #adminApprovalView>
+              <span
+                class="ms-2"
+                [ngClass]="
+                  recognition.adminApproval == null
+                    ? 'text-warning'
+                    : recognition.adminApproval != null &&
+                      recognition.adminApproval == true
+                    ? 'text-success'
+                    : 'text-danger'
+                "
+                >{{
+                  recognition.adminApproval == null
+                    ? "Pending"
+                    : recognition.adminApproval != null &&
+                      recognition.adminApproval == true
+                    ? "Approved"
+                    : "Rejected"
+                }}</span
+              >
+            </ng-template>
+          </div>
+
+          <ng-container *ngIf="recognition.admin != null">
+            <div class="d-flex col-sm-6">
+              <label for="admin"><strong>Admin:</strong></label>
+              <div class="d-flex flex-column col-sm-7 ms-2">
+                <span class="ms-2">{{ recognition.admin.name }}</span>
+              </div>
+            </div>
+          </ng-container>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="border light-grey"></div>
+
+<div class="modal-footer">
+  <div class="d-flex col-sm-12 justify-content-end mt-2">
+    <button class="btn-cancel me-2" (click)="closeDialog()">
+      {{ isUpdate ? "Cancel" : "Close" }}
+    </button>
+    <ng-container *ngIf="isUpdate">
+      <button
+        class="btn-input"
+        [disabled]="isSubmitDisabled"
+        (click)="submitForm()"
+      >
+        Save
+      </button>
+    </ng-container>
+  </div>
+</div>

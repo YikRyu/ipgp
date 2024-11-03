@@ -1,0 +1,16 @@
+<div class="container col-sm-12">
+  <div>
+    <h1 class="text-center">Reward Redeem Statistics</h1>
+  </div>
+  <div class="chart-container d-flex flex-row align-items-center justify-content-center col-sm-12">
+    <canvas
+      baseChart
+      [data]="pieChartData"
+      [type]="pieChartType"
+      [options]="pieChartOptions"
+      [type]="'pie'"
+      class="chart"
+    >
+    </canvas>
+  </div>
+</div>

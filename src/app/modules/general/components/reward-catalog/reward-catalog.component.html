@@ -1,0 +1,109 @@
+<div class="content-wrapper">
+  <div class="col-sm-12 d-flex flex-column p-5">
+    <div class="col-sm-12 d-flex justify-content-between">
+      <div>
+        <h2>Reward Catalog</h2>
+      </div>
+      <div class="d-flex flex-row align-items-center">
+        <div class="me-4">
+          <span
+            ><strong>Current Available Points: </strong>{{ userPoints }}</span
+          >
+        </div>
+
+        <button class="btn-input" (click)="openCart()">
+          <div class="d-flex align-items-center">
+            <strong
+              >Shopping Cart
+              {{
+                totalCartItems != 0 ? "(" + totalCartItems + ")" : ""
+              }}</strong
+            >
+            <i class="ms-2 bi bi-cart-fill btn-input-icon icon"></i>
+          </div>
+        </button>
+      </div>
+    </div>
+    <div class="border light-grey mt-2 mb-2"></div>
+
+    <ng-container *ngIf="!isCart; else cart">
+      <div class="catalog-container d-flex flex-row flex-wrap justify-content-around  mb-2 my-3">
+        <div
+          class="catalog-item d-flex flex-column my-2 me-4"
+          *ngFor="let reward of rewards"
+        >
+          <div class="col-sm-12 row-sm-12">
+            <div class="catalog-picture-container">
+              <img
+                [src]="reward.image == null ? noImageSrc : reward.image"
+                class="catalog-picture"
+              />
+            </div>
+
+            <div class="mt-2">
+              <div>
+                <button (click)="rewardDetails(reward)" class="btn-link">
+                  <span>{{ reward.name }}</span></button
+                ><br />
+                <span class="mt-2 ms-1"
+                  ><strong>{{ reward.points }} Points</strong></span
+                >
+              </div>
+  
+              <ng-container *ngIf="reward.limited">
+                <ng-container *ngIf="checkIsExpired(reward.limitedTime.toString()) == true">
+                  <span class="text-danger">Reward has expired and cannot be redeemed!</span>
+                </ng-container>
+                <ng-container *ngIf="checkIsExpired(reward.limitedTime.toString()) == false">
+                  <span>Reward available until </span><strong>{{(reward.limitedTime.toString() | customeDate)}}</strong> 
+                </ng-container>
+              </ng-container>
+  
+              <ng-container *ngIf="reward.quantity == 0">
+                <span class="text-danger">Reward is currently out of stock!</span>
+              </ng-container>
+  
+            </div>
+            
+            <div class="mt-2 col-sm-12 d-flex flex-row justify-content-end">
+              <button class="btn-input" [disabled]="reward.quantity == 0 || (reward.limited && checkIsExpired(reward.limitedTime.toString()))" (click)="redeemReward(reward)">
+                Redeem
+              </button>
+              <button
+                class="btn-input ms-2"
+                (click)="cartService.addToCart(reward)"
+                [disabled]="reward.quantity == 0 || (reward.limited && checkIsExpired(reward.limitedTime.toString()))"
+              >
+                Add to Cart
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-2 col-sm-12 pagination justify-content-end">
+        <mat-paginator
+          #paginator
+          class="paginator"
+          (page)="handlePageEvent($event)"
+          [length]="totalItems"
+          [pageSize]="size"
+          [showFirstLastButtons]="true"
+          [pageSizeOptions]="pageSizeOptions"
+          [pageIndex]="page"
+          aria-label="Select page"
+        >
+        </mat-paginator>
+      </div>
+    </ng-container>
+  </div>
+</div>
+
+<ng-template #cart>
+  <app-cart
+  [isCart]="isCart"
+  [userPoints]="userPoints"
+  [userId]="userId"
+  (isCartEmitter)="closeCart($event)"
+  (redeemedEmitter)="getUserPoints()"></app-cart>
+</ng-template>

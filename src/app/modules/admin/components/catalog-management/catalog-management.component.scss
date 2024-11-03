@@ -1,0 +1,13 @@
+@import "../../../../../styles.scss";
+
+.no-reward-container{
+  height: 40vh;
+  border-width: 1px;
+  border-color: black;
+  border-style: solid;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
