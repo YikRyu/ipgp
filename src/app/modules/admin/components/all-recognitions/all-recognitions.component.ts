@@ -21,6 +21,7 @@ import { RecognitionDetailsComponent } from 'src/app/modules/general/components/
 export class AllRecognitionsComponent implements OnInit {
   @Input() isAdmin: boolean;
   public userId: string = this.userService.getUserId();
+  private userPoints: number = 0;
   public allRecognitions: Recognition[] = [];
   public totalItems: number = 0;
   public page: number = 0;
@@ -41,10 +42,22 @@ export class AllRecognitionsComponent implements OnInit {
 
   ngOnInit(): void {
     this.getAllRecognitions();
+    this.getUserPoints();
   }
 
   public changeTab(tab: MatTabChangeEvent) {
     this.tab = tab.index;
+  }
+
+  private getUserPoints(){
+    this.authService.getUser(this.userId).subscribe({
+      next: (response) =>{
+        this.userPoints = response.points;
+      },
+      error: (error)=>{
+        this.toastService.showError('Error fetching user points: ' + error.message + ', ' + error.error.message);
+      }
+    });
   }
   
   private getAllRecognitions(){
@@ -100,7 +113,8 @@ export class AllRecognitionsComponent implements OnInit {
       dialogRef.afterClosed().pipe(
        switchMap((response)=>{
         if (response) {
-          if (response.status == 'approved')
+          if (response.status == 'approved'){
+            let newUserPoints = this.userPoints + response.points;
             if(recognition.type == 'self'){
               return forkJoin([
                 this.recognitionService.putRecognition(
@@ -111,7 +125,7 @@ export class AllRecognitionsComponent implements OnInit {
                   recognition.id,
                   recognition.createdBy.id
                 ),
-                this.authService.updatePoints(recognition.points, recognition.createdBy.id)
+                this.authService.updatePoints(newUserPoints, recognition.createdBy.id)
               ]);
             }else{
               return forkJoin([
@@ -127,10 +141,10 @@ export class AllRecognitionsComponent implements OnInit {
                   recognition.id,
                   recognition.peer.id
                 ),
-                this.authService.updatePoints(recognition.points, recognition.peer.id)
+                this.authService.updatePoints(newUserPoints, recognition.peer.id)
               ]);
-            }                
-          else
+            }  
+          } else
             return this.recognitionService.putRecognition(
               response,
               recognition.id

@@ -24,6 +24,7 @@ export class RecognitionDashboardComponent implements OnInit {
   private allRecognition: AllRecognitionsComponent;
 
   public userId: string = this.userService.getUserId();
+  private userPoints: number = 0;
   public isAdmin: boolean = null;
   public myRecognitions: Recognition[] = [];
   public myTotalItems: number = 0;
@@ -86,10 +87,22 @@ export class RecognitionDashboardComponent implements OnInit {
     this.getMyRecognitions();
     this.getApprovalRecognitions();
     this.getPeerRecognitions();
+    this.getUserPoints();
   }
 
   public changeTab(tab: MatTabChangeEvent) {
     this.tab = tab.index;
+  }
+
+  private getUserPoints(){
+    this.authService.getUser(this.userId).subscribe({
+      next: (response) =>{
+        this.userPoints = response.points;
+      },
+      error: (error)=>{
+        this.toastService.showError('Error fetching user points: ' + error.message + ', ' + error.error.message);
+      }
+    });
   }
 
   private getMyRecognitions() {
@@ -219,7 +232,8 @@ export class RecognitionDashboardComponent implements OnInit {
         .pipe(
           switchMap((response) => {
             if (response) {
-              if (response.status == 'approved')
+              if (response.status == 'approved'){
+                let newUserPoints = this.userPoints + response.points;
                 if(recognition.type == 'self'){
                   return forkJoin([
                     this.recognitionService.putRecognition(
@@ -230,7 +244,7 @@ export class RecognitionDashboardComponent implements OnInit {
                       recognition.id,
                       recognition.createdBy.id
                     ),
-                    this.authService.updatePoints(recognition.points, recognition.createdBy.id)
+                    this.authService.updatePoints(newUserPoints, recognition.createdBy.id)
                   ]);
                 }else{
                   return forkJoin([
@@ -246,9 +260,10 @@ export class RecognitionDashboardComponent implements OnInit {
                       recognition.id,
                       recognition.peer.id
                     ),
-                    this.authService.updatePoints(recognition.points, recognition.peer.id)
+                    this.authService.updatePoints(newUserPoints, recognition.peer.id)
                   ]);
-                }                
+                }  
+              }
               else
                 return this.recognitionService.putRecognition(
                   response,
@@ -310,8 +325,8 @@ export class RecognitionDashboardComponent implements OnInit {
       .subscribe({
         next: (response) => {
           this.toastService.showSuccess('Recognition cancelled!');
-          if (this.tab == 1) this.getMyRecognitions();
-          if (this.tab == 2) this.getApprovalRecognitions();
+          this.getMyRecognitions();
+          this.getApprovalRecognitions();
         },
         error: (error) => {
           this.toastService.showError(
