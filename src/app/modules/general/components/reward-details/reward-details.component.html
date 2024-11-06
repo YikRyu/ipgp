@@ -58,14 +58,14 @@
     <button class="btn-cancel me-2" (click)="closeDialog()">Close</button>
     <button
       class="btn-input me-2"
-      [disabled]="reward.limited && checkIsExpired(reward.limitedTime.toString())"
+      [disabled]="(reward.limited && checkIsExpired(reward.limitedTime.toString())) || reward.quantity == 0"
       (click)="submit('redeem')"
     >
       Redeem Reward
     </button>
     <button
       class="btn-input"
-      [disabled]="reward.limited && checkIsExpired(reward.limitedTime.toString())"
+      [disabled]="(reward.limited && checkIsExpired(reward.limitedTime.toString())) || reward.quantity == 0"
       (click)="submit('addCart')"
     >
       Add to Cart
