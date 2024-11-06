@@ -277,8 +277,8 @@ export class RecognitionDashboardComponent implements OnInit {
         .subscribe({
           next: (response) => {
             this.toastService.showSuccess('Recognition updated!');
-            if (this.tab == 1) this.getMyRecognitions();
-            if (this.tab == 2) this.getApprovalRecognitions();
+            this.getMyRecognitions();
+            this.getApprovalRecognitions();
           },
           error: (error) => {
             this.toastService.showError(

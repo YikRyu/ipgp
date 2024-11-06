@@ -89,17 +89,17 @@
               <div class="d-flex">
                 <button
                   class="btn-icon me-2"
-                  [ngClass]="{'disabled-icon text-secondary': recognition.status == 'cancel' || recognition.status == 'approved'}"
+                  [ngClass]="{'disabled-icon text-secondary': !(recognition.status == 'pending')}"
                   (click)="openDetails(recognition, true)"
-                  [disabled]="recognition.status == 'cancel' || recognition.status == 'approved'"
+                  [disabled]="!(recognition.status == 'pending')"
                 >
                   <i class="bi bi-pencil-fill icon"></i>
                 </button>
                 <button
                   class="btn-icon me-2"
-                  [ngClass]="recognition.status == 'cancel' || recognition.status == 'approved' ? 'text-secondary disabled-icon': 'text-danger'"
+                  [ngClass]="!(recognition.status == 'pending') ? 'text-secondary disabled-icon': 'text-danger'"
                   (click)="cancelRecognition(recognition)"
-                  [disabled]="recognition.status == 'cancel' || recognition.status == 'approved'"
+                  [disabled]="!(recognition.status == 'pending')"
                 >
                   <i class="bi bi-trash3-fill icon"></i>
                 </button>
