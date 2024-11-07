@@ -98,7 +98,7 @@ export class CatalogManagementComponent implements OnInit {
         this.getRewards();
       },
       error: (error) => {
-        this.toastService.showError(error.message);
+        this.toastService.showError(error.message + error.error.message);
       } 
     });
   }

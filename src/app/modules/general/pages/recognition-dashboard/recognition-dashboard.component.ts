@@ -233,8 +233,8 @@ export class RecognitionDashboardComponent implements OnInit {
           switchMap((response) => {
             if (response) {
               if (response.status == 'approved'){
-                let newUserPoints = this.userPoints + response.points;
                 if(recognition.type == 'self'){
+                  let newUserPoints = recognition.createdBy.points + response.points;
                   return forkJoin([
                     this.recognitionService.putRecognition(
                       response,
@@ -247,6 +247,7 @@ export class RecognitionDashboardComponent implements OnInit {
                     this.authService.updatePoints(newUserPoints, recognition.createdBy.id)
                   ]);
                 }else{
+                  let newUserPoints = recognition.peer.points + response.points;
                   return forkJoin([
                     this.recognitionService.putRecognition(
                       response,
