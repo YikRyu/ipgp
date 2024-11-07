@@ -255,10 +255,6 @@ export class RecognitionDashboardComponent implements OnInit {
                     ),
                     this.pointsTransactionService.postTransaction(
                       recognition.id,
-                      recognition.createdBy.id
-                    ),
-                    this.pointsTransactionService.postTransaction(
-                      recognition.id,
                       recognition.peer.id
                     ),
                     this.authService.updatePoints(newUserPoints, recognition.peer.id)
