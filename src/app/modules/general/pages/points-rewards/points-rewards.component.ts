@@ -47,9 +47,7 @@ export class PointsRewardsComponent implements OnInit {
   constructor(
     private userService: UserService,
     private pointsTransactionService: PointsTransactionsService,
-    private recognitionService: RecognitionService,
     private rewardsTransactionService: RewardTransactionsService,
-    private rewardService: RewardService,
     private toastService: ToastService,
     private dialog: MatDialog
   ) { }
@@ -77,6 +75,7 @@ export class PointsRewardsComponent implements OnInit {
     this.rewardsTransactionService.getTransactions(this.userId, this.rewardsPage, this.rewardsSize)
     .subscribe({
       next: (rewardsTransactions)=>{
+        this.rewardsTotalItems = rewardsTransactions.totalItems;
         rewardsTransactions.data.map((rewardTransaction)=>{
           let rewards: RewardsForTransaction[] = JSON.parse(rewardTransaction.rewards);
           this.rewardsTransactions.push({
